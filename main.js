@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, globalShortcut} = require('electron')
+const {app, BrowserWindow, globalShortcut, Tray} = require('electron')
 const { readText } = require('./Clipboard');
 const path = require('path')
 
@@ -48,6 +48,15 @@ function createWindow () {
 
 }
 
+
+const createTray = () => {
+    let tray = null
+    app.whenReady().then(() => {
+      tray = new Tray('./translate.png')
+      tray.setToolTip('Translate everywhere')
+  })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -59,6 +68,10 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+
+  createTray();
+
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
