@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, globalShortcut, Tray} = require('electron')
+const {app, BrowserWindow, globalShortcut, Tray, Menu} = require('electron')
 const { readText } = require('./Clipboard');
 const path = require('path')
 
@@ -17,10 +17,12 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadURL("https://translate.google.com");
+  mainWindow.loadURL("https://translate.google.com/?sl=auto&tl=ru&op=translate");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  // setTimeout(() => {
+    // mainWindow.webContents.openDevTools();
+  // })
 
   const showWindow = () => {
     mainWindow.show();
@@ -52,8 +54,12 @@ function createWindow () {
 const createTray = () => {
     let tray = null
     app.whenReady().then(() => {
-      tray = new Tray('./translate.png')
-      tray.setToolTip('Translate everywhere')
+      tray = new Tray(path.resolve(__dirname, './translate.png'))
+      const contextMenu = Menu.buildFromTemplate([
+        { label: 'exit', type: 'normal', click: appQuit },
+      ])
+      tray.setToolTip('Translate everywhere');
+      tray.setContextMenu(contextMenu)
   })
 }
 
@@ -78,8 +84,12 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin') appQuit()
 })
+
+const appQuit = () => {
+  app.quit();
+}
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

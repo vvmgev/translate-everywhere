@@ -1,22 +1,31 @@
 {
-  "name": "electron-quick-start",
+  "name": "translate-everywhere",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "build": {
+    "appId": "com",
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility"
+    }
+  },
+  "repository": "https://github.com/vvmgev/translate-everywhere",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Electron"
   ],
-  "author": "GitHub",
+  "author": "Gevorg Baghdasaryan <vvmgev@gmail.com>",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^14.0.0"
+    "electron": "^14.0.0",
+    "electron-builder": "^22.11.7"
   }
 }
