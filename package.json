@@ -1,7 +1,7 @@
 {
   "name": "translate-everywhere",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "The application use Google Translate to translate words from the Clipboard",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,7 +9,13 @@
     "dist": "electron-builder"
   },
   "build": {
-    "appId": "com",
+    "appId": "com.translate.everywhere",
+    "productName": "Translate Everywhere",
+    "nsis": {
+      "artifactName": "TranslateEverywhere.setup.${version}.${ext}",
+      "uninstallDisplayName": "Translate Everywhere"
+    },
+    "icon": "./icon.icns",
     "linux": {
       "target": [
         "AppImage",

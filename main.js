@@ -1,16 +1,18 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, globalShortcut, Tray, Menu} = require('electron')
+const {app, BrowserWindow, screen, globalShortcut, Tray, Menu} = require('electron')
 const { readText } = require('./Clipboard');
 const path = require('path')
 
 function createWindow () {
   // Create the browser window.
+  const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
+
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 700,
+    width: screenWidth - screenWidth * 30 / 100,
+    height: screenHeight - screenHeight * 50 / 100,
     show: false,
     frame: false,
-    resizable: false,
+    resizable: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
@@ -20,9 +22,7 @@ function createWindow () {
   mainWindow.loadURL("https://translate.google.com/?sl=auto&tl=ru&op=translate");
 
   // Open the DevTools.
-  // setTimeout(() => {
-    // mainWindow.webContents.openDevTools();
-  // })
+  // mainWindow.webContents.openDevTools();
 
   const showWindow = () => {
     mainWindow.show();
@@ -56,7 +56,7 @@ const createTray = () => {
     app.whenReady().then(() => {
       tray = new Tray(path.resolve(__dirname, './translate.png'))
       const contextMenu = Menu.buildFromTemplate([
-        { label: 'exit', type: 'normal', click: appQuit },
+        { label: 'exit', type: 'normal', click: () => {appQuit()} },
       ])
       tray.setToolTip('Translate everywhere');
       tray.setContextMenu(contextMenu)
@@ -67,7 +67,8 @@ const createTray = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow()
+  createWindow();
+  createTray();
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -76,7 +77,6 @@ app.whenReady().then(() => {
   })
 
 
-  createTray();
 
 })
 
