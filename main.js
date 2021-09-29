@@ -3,6 +3,9 @@ const {app, BrowserWindow, screen, globalShortcut, Tray, Menu} = require('electr
 const { readText } = require('./Clipboard');
 const path = require('path')
 
+const hideShowShortcut = 'CommandOrControl+L';
+const escapeShortcut = 'Escape';
+
 function createWindow () {
   // Create the browser window.
   const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
@@ -27,27 +30,21 @@ function createWindow () {
   const showWindow = () => {
     mainWindow.show();
     mainWindow.focus();
-  };
-
-  const registerListener = () => {
-    const hideShowShortcut = 'CommandOrControl+L';
-    globalShortcut.register(hideShowShortcut, () => {
-      mainWindow.webContents.send('translate', readText());
-      showWindow();
-    });
-  
-    const escapeShortcut = 'Escape';
     globalShortcut.register(escapeShortcut, () => {
       if(mainWindow.isVisible()) mainWindow.hide();
-    });
-  
-    mainWindow.on('blur', () => {
-      mainWindow.hide();
+      globalShortcut.unregister(escapeShortcut);
     });
   };
 
-  registerListener();
+  globalShortcut.register(hideShowShortcut, () => {
+    mainWindow.webContents.send('translate', readText());
+    showWindow();
+  });
 
+  mainWindow.on('blur', () => {
+    mainWindow.hide();
+    globalShortcut.unregister(escapeShortcut);
+  });
 }
 
 
