@@ -1,31 +1,60 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, screen, globalShortcut, Tray, Menu} = require('electron')
-const { readText } = require('./Clipboard');
+const {app, BrowserWindow, screen, globalShortcut, Tray, Menu, ipcMain} = require('electron')
 const path = require('path')
-
-const hideShowShortcut = 'CommandOrControl+L';
-const escapeShortcut = 'Escape';
-
+const { readText } = require('./Clipboard');
+const { hideShowShortcut, escapeShortcut, translateRu, translateHy } = require('./constats')
+const { initTranslation } = require('./translation');
 function createWindow () {
   // Create the browser window.
   const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
-
+  const width = Math.round(screenWidth - screenWidth * 20 / 100);
+  const height =  Math.round(screenHeight - screenHeight * 20 / 100);
   const mainWindow = new BrowserWindow({
-    width: screenWidth - screenWidth * 30 / 100,
-    height: screenHeight - screenHeight * 50 / 100,
+    width,
+    height,
     show: false,
     frame: false,
     resizable: true,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
   })
 
+
+    const addTranslation = initTranslation();
+    const russianTl = addTranslation(translateRu, 
+        { x: 0, y: 0, width: width - 0, height: Math.round(height / 2)},
+        {
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js')
+            }
+        }
+    )
+    const armenianTl = addTranslation(translateHy, 
+        { x: 0, y: Math.round(height / 2), width: width - 0, height: Math.round(height / 2)},
+        {
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js')
+            }
+        }
+    )
+    mainWindow.addBrowserView(russianTl.view);
+    mainWindow.addBrowserView(armenianTl.view);
+    
+    ipcMain.on("input", (event, args) => {
+      console.log('args',args)
+        // russianTl.webContents.send('translate', args);
+    //   armenianTl.webContents.send('translate', args);
+    });
+    console.log(russianTl.view)
+    // russianTl.view.webPreferences.on("input", (event, args) => {
+    //     console.log('args webPreferences',args)
+    //       // russianTl.webContents.send('translate', args);
+    //   //   armenianTl.webContents.send('translate', args);
+    //   });
+
   // and load the index.html of the app.
-  mainWindow.loadURL("https://translate.google.com/?sl=auto&tl=ru&op=translate");
+  // mainWindow.loadURL("https://translate.google.com/?sl=auto&tl=ru&op=translate");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+//   russianTl.webContents.openDevTools();
 
   const showWindow = () => {
     mainWindow.show();
@@ -37,7 +66,8 @@ function createWindow () {
   };
 
   globalShortcut.register(hideShowShortcut, () => {
-    mainWindow.webContents.send('translate', readText());
+      russianTl.view.webContents.send('translate', readText());
+      armenianTl.view.webContents.send('translate', readText());
     showWindow();
   });
 

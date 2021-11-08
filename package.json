@@ -4,7 +4,7 @@
   "description": "The application use Google Translate to translate words from the Clipboard",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron --inspect .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
