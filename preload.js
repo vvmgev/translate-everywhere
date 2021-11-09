@@ -2,8 +2,6 @@ const { ipcRenderer } = require('electron');
 // // All of the Node.js APIs are available in the preload process.
 // // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
-
-  
   const textAreaSource = document.querySelector('[aria-label="Source text"]');
   ipcRenderer.on('translate', (event, word) => {
     textAreaSource.value = word
@@ -14,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
   textAreaSource.dispatchEvent(inputEvent);
   });
   
-  textAreaSource.addEventListener('input', (e) => {
+  textAreaSource.addEventListener('keyup', (e) => {
     ipcRenderer.send('input', e.target.value)
   });
 });

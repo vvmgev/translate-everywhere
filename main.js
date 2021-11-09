@@ -39,22 +39,15 @@ function createWindow () {
     mainWindow.addBrowserView(armenianTl.view);
     
     ipcMain.on("input", (event, args) => {
-      console.log('args',args)
-        // russianTl.webContents.send('translate', args);
-    //   armenianTl.webContents.send('translate', args);
+      russianTl.view.webContents.send('translate', args);
+      armenianTl.view.webContents.send('translate', args);
     });
-    console.log(russianTl.view)
-    // russianTl.view.webPreferences.on("input", (event, args) => {
-    //     console.log('args webPreferences',args)
-    //       // russianTl.webContents.send('translate', args);
-    //   //   armenianTl.webContents.send('translate', args);
-    //   });
 
   // and load the index.html of the app.
   // mainWindow.loadURL("https://translate.google.com/?sl=auto&tl=ru&op=translate");
 
   // Open the DevTools.
-//   russianTl.webContents.openDevTools();
+  // russianTl.view.webContents.openDevTools();
 
   const showWindow = () => {
     mainWindow.show();
