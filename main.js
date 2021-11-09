@@ -17,13 +17,6 @@ function createWindow () {
     resizable: true,
   })
 
-  mainWindow.on('resize', function () {
-    var size   = mainWindow.getSize();
-    var width  = size[0];
-    var height = size[1];
-});
-
-
     const addTranslation = initTranslation();
     const russianTl = addTranslation(translateRu, 
         { x: 0, y: 0, width, height: Math.round(height / 2)},
