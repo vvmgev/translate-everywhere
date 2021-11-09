@@ -17,10 +17,16 @@ function createWindow () {
     resizable: true,
   })
 
+  mainWindow.on('resize', function () {
+    var size   = mainWindow.getSize();
+    var width  = size[0];
+    var height = size[1];
+});
+
 
     const addTranslation = initTranslation();
     const russianTl = addTranslation(translateRu, 
-        { x: 0, y: 0, width: width - 0, height: Math.round(height / 2)},
+        { x: 0, y: 0, width, height: Math.round(height / 2)},
         {
             webPreferences: {
                 preload: path.join(__dirname, 'preload.js')
@@ -35,6 +41,8 @@ function createWindow () {
             }
         }
     )
+    russianTl.view.setAutoResize({width: true, height: true, horizontal: true, vertical: true});
+    armenianTl.view.setAutoResize({width: true, height: true, horizontal: true, vertical: true});
     mainWindow.addBrowserView(russianTl.view);
     mainWindow.addBrowserView(armenianTl.view);
     
