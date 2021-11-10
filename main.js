@@ -2,6 +2,7 @@
 const {app, BrowserWindow, screen, globalShortcut, Tray, Menu, ipcMain} = require('electron')
 const path = require('path')
 const { readText } = require('./Clipboard');
+const clipboardListener = require('./Clipboard');
 const { hideShowShortcut, escapeShortcut, translateRu, translateHy } = require('./constats')
 const { initTranslation } = require('./translation');
 function createWindow () {
@@ -16,6 +17,13 @@ function createWindow () {
     frame: false,
     resizable: true,
   })
+
+  clipboardListener.startListening();
+  clipboardListener.on('change', () => {
+    console.log('Clipboard changed');
+  });
+
+
 
     const addTranslation = initTranslation();
     const russianTl = addTranslation(translateRu, 
